@@ -1,5 +1,6 @@
-# Final project
+# Final project  
 
+## Requirements   
 ### 1. Find a Problem worth Solving, Analyzing, and Visualizing   
 ### 2. You must use at least three of the below   
  * A database    
