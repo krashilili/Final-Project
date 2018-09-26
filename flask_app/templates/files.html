@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}{{title}}{% endblock %}
+{% block head %}
+
+{% endblock %}
+{% block page %}{{title}}{% endblock %}
+{% block heading %}
+
+{% endblock %}
+
+{% block content %}
+
+  <p>Files:</p>
+  <ul>
+    {% for n in file_list %}
+    <li>{{n}}</li>
+    {% endfor %}
+  </ul>
+  <br>
+
+  {% block footer %}
+
+  {% endblock %}
+{% endblock %}
