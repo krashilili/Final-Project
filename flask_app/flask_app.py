@@ -1,5 +1,5 @@
 import os, datetime
-from flask import Flask, flash, request, redirect, url_for, render_template
+from flask import Flask, flash, request, redirect, url_for, render_template, jsonify
 from werkzeug.utils import secure_filename
 import pandas as pd
 import json
@@ -11,6 +11,11 @@ app = Flask(__name__)
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(APP_ROOT, 'uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+file_name = 'Dice_US_jobs.csv'
+file = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
+
+df = pd.read_csv(file, encoding="ISO-8859-1")
 
 
 def allowed_file(filename):
@@ -85,7 +90,6 @@ def upload():
             """
 
 
-
 @app.route('/save2db/<filename>')
 def save_to_mongodb(filename):
     file = os.path.join(app.config['UPLOAD_FOLDER'], filename)
@@ -106,6 +110,40 @@ def save_to_mongodb(filename):
     else:
         coll.insert_many(records)
         return "The data has been inserted into the database."
+
+
+@app.route('/job_type')
+def job_type():
+    full_time = 0
+    contract = 0
+    # file = os.path.join(app.config['UPLOAD_FOLDER'], )
+    for job_type in df['job_type']:
+
+        try:
+            job = job_type.lower()
+            if 'full' in job:
+                full_time += 1
+
+            if 'contract' in job or 'c2h' in job:
+                contract += 1
+        except:
+            pass
+
+    result= jsonify({'full_time': full_time,
+                    'contract': contract})
+    return result
+
+
+@app.route('/organization')
+def org():
+    company = df.groupby('organization')
+    org = company.count()['job_type'].sort_values(ascending=False)[:25].to_dict()
+    org['Nigel Frank International Inc'] = org['Nigel Frank International'] + org['Nigel Frank International Inc.']
+
+    org.pop('Nigel Frank International')
+    org.pop('Nigel Frank International Inc.')
+
+    return jsonify(org)
 
 if __name__ == '__main__':
     app.run()
