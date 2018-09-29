@@ -2,8 +2,10 @@ import os, datetime
 from flask import Flask, flash, request, redirect, url_for, render_template, jsonify
 from werkzeug.utils import secure_filename
 import pandas as pd
-import json
+import json, operator
+from datetime import datetime as dt
 from pymongo import MongoClient
+from collections import OrderedDict
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','csv'])
 
@@ -144,6 +146,29 @@ def org():
     org.pop('Nigel Frank International Inc.')
 
     return jsonify(org)
+
+
+@app.route('/date_added')
+def date_added():
+    dates = df.groupby('date_added')
+    dcts = dates.count()['job_title'].to_dict()
+    dcts2 = {dt.strptime(k, '%m/%d/%Y'): v for k, v in dcts.items()}
+
+    ordered = OrderedDict(sorted(dcts2.items(), key=operator.itemgetter(0)))
+
+    key, val = list(), list()
+    for k, v in ordered.items():
+        date = dt.strftime(k, '%m/%d/%Y')
+        key.append(date)
+        val.append(v)
+
+    result ={'dates': key,
+             'jobs_available': val}
+
+    return jsonify(result)
+
+
+
 
 if __name__ == '__main__':
     app.run()
