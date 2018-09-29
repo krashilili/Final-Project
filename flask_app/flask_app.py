@@ -38,6 +38,10 @@ def template_test():
     return render_template('template.html', my_string="Wheeeee!",
         my_list=[0,1,2,3,4,5], title="Index", current_time=datetime.datetime.now())
 
+@app.route("/index")
+def index():
+    return render_template('index.html')
+
 @app.route("/home")
 def home():
     return render_template('template.html', my_string="Foo",
@@ -171,4 +175,4 @@ def date_added():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
