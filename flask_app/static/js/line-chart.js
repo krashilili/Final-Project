@@ -11,7 +11,6 @@ sucess = function(data) {
     var data = [trace1];
     var layout = {
         title: `Available Jobs`,
-        xaxis: { title: "Months"},
         yaxis: { title: "Number of Jobs"}
     };
     Plotly.newPlot("line", data, layout);   
