@@ -17,6 +17,11 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 file_name = 'Dice_US_jobs.csv'
 file = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
 
+DATA_FOLDER = os.path.join(APP_ROOT, 'data')
+geojson_name = 'city_jobs.geojson'
+geojson_file =  os.path.join(DATA_FOLDER, geojson_name)
+
+
 df = pd.read_csv(file, encoding="ISO-8859-1")
 
 
@@ -170,9 +175,14 @@ def date_added():
              'jobs_available': val}
 
     return jsonify(result)
+    # return "DOne"
 
 
-
+@app.route('/geojson')
+def map():
+    # df.read(geojson_file)
+    df = pd.read_json(geojson_file)
+    return df.to_json()
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
