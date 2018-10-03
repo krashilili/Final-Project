@@ -1,7 +1,7 @@
 var url = `/date_added`;
 
 sucess = function(data) {
-    console.log(data)
+    console.log(data);
     // Build line chart
     var trace1 = {
         x: data.dates,
@@ -11,12 +11,12 @@ sucess = function(data) {
     var data = [trace1];
     var layout = {
         title: `Available Jobs`,
-        xaxis: { title: "Months"},
+        xaxis: { title: ""},
         yaxis: { title: "Number of Jobs"}
     };
     Plotly.newPlot("line", data, layout);   
     
-}
+};
 
 d3.json(url, sucess);
 
