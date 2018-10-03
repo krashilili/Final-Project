@@ -181,8 +181,14 @@ def date_added():
 @app.route('/geojson')
 def map():
     # df.read(geojson_file)
+    geojson = dict()
     df = pd.read_json(geojson_file)
-    return df.to_json()
+
+    geojson['features'] = list(df['features'])
+    geojson['type'] = 'FeatureCollection'
+
+    return jsonify(geojson)
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
