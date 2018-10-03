@@ -6,6 +6,7 @@ import json, operator
 from datetime import datetime as dt
 from pymongo import MongoClient
 from collections import OrderedDict
+from flask_paginate import Pagination, get_page_parameter
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','csv'])
 
@@ -57,12 +58,6 @@ def home():
 def about():
     return render_template('template.html', my_string="Bar",
         my_list=[12,13,14,15,16,17], title="About", current_time=datetime.datetime.now())
-
-
-# @app.route("/upload")
-# def contact():
-#     return render_template('template.html', my_string="FooBar"
-#         , my_list=[18,19,20,21,22,23], title="Contact Us", current_time=datetime.datetime.now())
 
 
 @app.route('/upload', methods=['GET', 'POST'])
@@ -188,6 +183,33 @@ def map():
     geojson['type'] = 'FeatureCollection'
 
     return jsonify(geojson)
+
+
+@app.route('table')
+def table():
+    search = False
+    q = request.args.get('q')
+    if q:
+        search = True
+
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+
+    # users = User.find(...)
+    # pagination = Pagination(page=page, total=users.count(), search=search, record_name='users')
+
+    # 'page' is the default name of the page parameter, it can be customized
+    # e.g. Pagination(page_parameter='p', ...)
+    # or set PAGE_PARAMETER in config file
+    # also likes page_parameter, you can customize for per_page_parameter
+    # you can set PER_PAGE_PARAMETER in config file
+    # e.g. Pagination(per_page_parameter='pp')
+
+    # return render_template('table.html',
+    #                        users=users,
+    #                        pagination=pagination,
+    #                        )
+
+    return "Done!"
 
 
 if __name__ == '__main__':
