@@ -2,11 +2,12 @@ import os, datetime
 from flask import Flask, flash, request, redirect, url_for, render_template, jsonify
 from werkzeug.utils import secure_filename
 import pandas as pd
-import json, operator
+import json, operator, numpy
 from datetime import datetime as dt
 from pymongo import MongoClient
 from collections import OrderedDict
 from flask_paginate import Pagination, get_page_parameter
+
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','csv'])
 
@@ -152,6 +153,10 @@ def org():
     return jsonify(org)
 
 
+def default(o):
+    if isinstance(o, numpy.int64): return int(o)
+    raise TypeError
+
 @app.route('/date_added')
 def date_added():
     dates = df.groupby('date_added')
@@ -164,12 +169,12 @@ def date_added():
     for k, v in ordered.items():
         date = dt.strftime(k, '%m/%d/%Y')
         key.append(date)
-        val.append(v)
+        val.append(numpy.int64(v))
 
     result ={'dates': key,
              'jobs_available': val}
 
-    return jsonify(result)
+    return json.dumps(result, default=default)
     # return "DOne"
 
 
@@ -213,4 +218,4 @@ def table():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5000)
