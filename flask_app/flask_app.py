@@ -185,7 +185,7 @@ def map():
     return jsonify(geojson)
 
 
-@app.route('table')
+@app.route('/table')
 def table():
     search = False
     q = request.args.get('q')
