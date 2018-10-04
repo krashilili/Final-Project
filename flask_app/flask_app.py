@@ -1,15 +1,23 @@
 import os, datetime
-from flask import Flask, flash, request, redirect, url_for, render_template, jsonify
+from flask import Flask, flash, request, redirect, url_for, render_template, jsonify, g, current_app
 from werkzeug.utils import secure_filename
-import pandas as pd
-import json, operator
+import pandas as pd, sqlite3
+import json, operator, numpy
 from datetime import datetime as dt
 from pymongo import MongoClient
 from collections import OrderedDict
+from flask_paginate import Pagination, get_page_args
+from flask_sqlalchemy import SQLAlchemy
+
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','csv'])
 
 app = Flask(__name__)
+# Sqlite db setting
+app.config.from_pyfile('app.cfg')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///jobDB.db'
+
+# Upload file setting
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(APP_ROOT, 'uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -37,33 +45,59 @@ def datetimefilter(value, format='%Y/%m/%d %H:%M'):
 
 app.jinja_env.filters['datetimefilter'] = datetimefilter
 
+@app.before_request
+def before_request():
+    g.conn = sqlite3.connect('jobDB.db')
+    g.conn.row_factory = sqlite3.Row
+    g.cur = g.conn.cursor()
+
+
+@app.teardown_request
+def teardown(error):
+    if hasattr(g, 'conn'):
+        g.conn.close()
+
+
+app.config.from_pyfile('app.cfg')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///jobDB.db'
+db = SQLAlchemy(app)
+
+
+class Job(db.Model):
+    Job_ID = db.Column(db.Integer, primary_key=True)
+    Date_Added = db.Column(db.String(20))
+    Country_Code = db.Column(db.String(10))
+    Job_Board = db.Column(db.String(20))
+    Job_Description = db.Column(db.String(254))
+    Job_Title = db.Column(db.String(254))
+    Job_Type = db.Column(db.String(254))
+    City = db.Column(db.String(50))
+    State = db.Column(db.String(10))
+    Location = db.Column(db.String(50))
+    Organization = db.Column(db.String(254))
+    Page_URL = db.Column(db.String(254))
+    Sector = db.Column(db.String(254))
+
+    def __repr__(self):
+        return '<Job %r>' % self.Job_ID
+
 
 @app.route("/")
 def template_test():
     return render_template('template.html', my_string="Wheeeee!",
         my_list=[0,1,2,3,4,5], title="Index", current_time=datetime.datetime.now())
 
-@app.route("/index")
-def index():
-    return render_template('index.html')
 
-@app.route("/home")
-def home():
-    return render_template('template.html', my_string="Foo",
-        my_list=[6,7,8,9,10,11], title="Home", current_time=datetime.datetime.now())
+@app.route("/dashboard")
+def dashboard():
+    return render_template('dashboard.html')
 
 
-@app.route("/about")
-def about():
-    return render_template('template.html', my_string="Bar",
-        my_list=[12,13,14,15,16,17], title="About", current_time=datetime.datetime.now())
-
-
-# @app.route("/upload")
-# def contact():
-#     return render_template('template.html', my_string="FooBar"
-#         , my_list=[18,19,20,21,22,23], title="Contact Us", current_time=datetime.datetime.now())
-
+# @app.route("/about")
+# def about():
+#     return render_template('template.html', my_string="Bar",
+#         my_list=[12,13,14,15,16,17], title="About", current_time=datetime.datetime.now())
+#
 
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
@@ -157,6 +191,11 @@ def org():
     return jsonify(org)
 
 
+def default(o):
+    if isinstance(o, numpy.int64): return int(o)
+    raise TypeError
+
+# endpoints
 @app.route('/date_added')
 def date_added():
     dates = df.groupby('date_added')
@@ -169,12 +208,12 @@ def date_added():
     for k, v in ordered.items():
         date = dt.strftime(k, '%m/%d/%Y')
         key.append(date)
-        val.append(v)
+        val.append(numpy.int64(v))
 
     result ={'dates': key,
              'jobs_available': val}
 
-    return jsonify(result)
+    return json.dumps(result, default=default)
     # return "DOne"
 
 
@@ -190,5 +229,84 @@ def map():
     return jsonify(geojson)
 
 
+@app.route('/table')
+def table():
+    total = Job.query.count()
+
+    page, per_page, offset = get_page_args(page_parameter='page',
+                                           per_page_parameter='per_page')
+    sql = 'select * from job order by Job_ID limit {}, {}'\
+        .format(offset, per_page)
+    g.cur.execute(sql)
+    jobs = g.cur.fetchall()
+
+    pagination = get_pagination(page=page,
+                                per_page=per_page,
+                                total=total,
+                                record_name='jobs',
+                                format_total=True,
+                                format_number=True,
+                                )
+    return render_template('table.html',
+                           jobs=jobs,
+                           page=page,
+                           per_page=per_page,
+                           pagination=pagination,
+                           )
+
+
+@app.route('/jobs/', defaults={'page': 1})
+@app.route('/jobs', defaults={'page': 1})
+@app.route('/jobs/page/<int:page>/')
+@app.route('/jobs/page/<int:page>')
+def jobs(page):
+    g.cur.execute('select * from job')
+    total = g.cur.fetchone()[0]
+    page, per_page, offset = get_page_args()
+    sql = 'select * from job order by Job_ID limit {}, {}'\
+        .format(offset, per_page)
+    g.cur.execute(sql)
+    jobs = g.cur.fetchall()
+    pagination = get_pagination(page=page,
+                                per_page=per_page,
+                                total=total,
+                                record_name='jobs',
+                                format_total=True,
+                                format_number=True,
+                                )
+    return render_template('table.html', jobs=jobs,
+                           page=page,
+                           per_page=per_page,
+                           pagination=pagination,
+                           active_url='users-page-url',
+                           )
+
+
+def get_css_framework():
+    return current_app.config.get('CSS_FRAMEWORK', 'bootstrap4')
+
+
+def get_link_size():
+    return current_app.config.get('LINK_SIZE', 'sm')
+
+
+def get_alignment():
+    return current_app.config.get('LINK_ALIGNMENT', '')
+
+
+def show_single_page_or_not():
+    return current_app.config.get('SHOW_SINGLE_PAGE', False)
+
+
+def get_pagination(**kwargs):
+    kwargs.setdefault('record_name', 'records')
+    return Pagination(css_framework=get_css_framework(),
+                      link_size=get_link_size(),
+                      alignment=get_alignment(),
+                      show_single_page=show_single_page_or_not(),
+                      **kwargs
+                      )
+
+
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5000)
