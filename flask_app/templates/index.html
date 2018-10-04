@@ -52,13 +52,13 @@
   <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
 
   <!-- API Key -->
-  <!--<script type="text/javascript" src="js/config.js"></script>-->
+  <script src="{{ url_for('static', filename='js/config.js') }}"></script>
 
   <!-- Our JavaScript -->
-  <!--<script type="text/javascript" src="js/logic.js"></script>-->
+  <script src="{{ url_for('static', filename='js/logic.js') }}"></script>
 
   <!--Plotly line chart-->
-  <script src="{{ url_for('static', filename='js/line-chart.js') }}"></script> -->
+  <script src="{{ url_for('static', filename='js/line-chart.js') }}"></script>
   <!-- <script type="text/javascript" src="static/js/line-chart.js"></script> -->
   <script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
 </body>

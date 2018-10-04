@@ -1,6 +1,6 @@
 // Store our API endpoint inside queryUrl
 // Getting data of all M2.5+ earthquakes from the past week
-var queryUrl = "https://raw.githubusercontent.com/krashilili/Final-Project/master/flask_app/data/city_jobs_2.geojson";
+var queryUrl = "https://raw.githubusercontent.com/krashilili/Final-Project/allison_v2/flask_app/data/city_jobs_2.geojson";
 
 // Perform a GET request to the query URL
 d3.json(queryUrl, function(data) {
