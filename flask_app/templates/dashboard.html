@@ -71,7 +71,7 @@
 <div class="container">
   <div class="row">
     <!-- Map -->
-    <div class="col-sm-6 col-md-6">
+    <div class="col-sm-7 col-md-7">
         <div class='tableauPlaceholder' id='viz1538632332737' style='position: relative'>
             <noscript><a href='#'>
               <img alt='Dashboard 1 ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ma&#47;Map_1343&#47;Dashboard1&#47;1_rss.png' style='border: none' />
@@ -95,11 +95,10 @@
     </div>
 
     
-    <!-- Carousel WorldCloud -->
-    <div class="col-sm-6 col-md-6">
+    
+    <div class="col-sm-5 col-md-5">
+      <!-- Carousel WordCloud -->
       <div class="row">
-        <div class="box"></div>
-      </div>
       <div id="myCarousel" class="carousel slide" data-ride="carousel">
         <!-- Indicators -->
         <ol class="carousel-indicators">
@@ -136,6 +135,80 @@
             <span class="sr-only">Next</span>
           </a>
       </div>
+      </div>
+      
+      <!-- Carousel Bar Chart -->
+      <div class="row">
+          <div id="myCarouselTableau" class="carousel slide" data-ride="carousel">
+              <!-- Indicators -->
+              <ol class="carousel-indicators">
+                <li data-target="#myCarouselTableau" data-slide-to="0" class="active"></li>
+                <li data-target="#myCarouselTableau" data-slide-to="1"></li>
+              </ol>
+      
+              <!-- Wrapper for slides -->
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class='tableauPlaceholder' id='viz1538667671270' style='position: relative'>
+                        <noscript>
+                            <a href='#'>
+                            <img alt='Dashboard 2 ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;RG&#47;RGFCP6HMS&#47;1_rss.png' style='border: none' />
+                            </a>
+                            </noscript>
+                            <object class='tableauViz'  style='display:none;'>
+                            <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> 
+                            <param name='embed_code_version' value='3' /> 
+                            <param name='path' value='shared&#47;RGFCP6HMS' /> 
+                            <param name='toolbar' value='yes' />
+                            <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;RG&#47;RGFCP6HMS&#47;1.png' /> 
+                            <param name='animate_transition' value='yes' />
+                            <param name='display_static_image' value='yes' />
+                            <param name='display_spinner' value='yes' />
+                            <param name='display_overlay' value='yes' />
+                            <param name='display_count' value='yes' />
+                            <param name='filter' value='publish=yes' />
+                            </object>
+                            </div>   
+                </div>
+      
+                <div class="carousel-item">
+                    <div class='tableauPlaceholder' id='viz1538670199867' style='position: relative'>
+                        <noscript>
+                            <a href='#'>
+                            <img alt='Dashboard 3 ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ma&#47;Map_1343&#47;Dashboard3&#47;1_rss.png' style='border: none' />
+                            </a>
+                            </noscript>
+                            <object class='tableauViz'  style='display:none;'>
+                            <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> 
+                            <param name='embed_code_version' value='3' /> 
+                            <param name='site_root' value='' />
+                            <param name='name' value='Map_1343&#47;Dashboard3' />
+                            <param name='tabs' value='no' />
+                            <param name='toolbar' value='yes' />
+                            <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ma&#47;Map_1343&#47;Dashboard3&#47;1.png' /> 
+                            <param name='animate_transition' value='yes' />
+                            <param name='display_static_image' value='yes' />
+                            <param name='display_spinner' value='yes' />
+                            <param name='display_overlay' value='yes' />
+                            <param name='display_count' value='yes' />
+                            </object>
+                            </div>  
+                </div>
+              </div>
+      
+              <!-- Left and right controls -->
+              <a class="carousel-control-prev" href="#myCarouselTableau" role="button" data-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next" href="#myCarouselTableau" role="button" data-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="sr-only">Next</span>
+                </a>
+            </div>
+      </div>
+
+      
     </div>
   <!-- </div> -->
 </div>
@@ -182,6 +255,10 @@
   <!-- <script type="text/javascript" src="static/js/line-chart.js"></script> -->
 
   <script src="{{ url_for('static', filename='js/tableau.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/bar-chart1.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/bar-chart2.js') }}"></script>
+
+
   
 </body>
 

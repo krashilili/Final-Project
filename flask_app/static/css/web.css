@@ -59,7 +59,10 @@ body{padding-top:50px;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;}
 
 #myCarousel {
     width: 100%;
-    padding-top: 50px
+}
+
+#myCarouselTableau {
+    width: 100%;
 }
 
 .carousel-inner img {

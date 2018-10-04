@@ -1,10 +1,10 @@
-var divElement = document.getElementById('viz1538632332737');                    
+var divElement = document.getElementById('viz1538667671270');                    
 var vizElement = divElement.getElementsByTagName('object')[0];                    
-vizElement.style.minWidth='420px';
-vizElement.style.maxWidth='650px';
+vizElement.style.minWidth='300px';
+vizElement.style.maxWidth='500px';
 vizElement.style.width='100%';
-vizElement.style.minHeight='587px';
-vizElement.style.maxHeight='887px';
+vizElement.style.minHeight='550px';
+vizElement.style.maxHeight='900px';
 vizElement.style.height='100%';                    
 var scriptElement = document.createElement('script');                    
 scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    
