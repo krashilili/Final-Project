@@ -26,11 +26,11 @@ def teardown(error):
 
 @app.route('/')
 def index():
-    g.cur.execute('select * from jobDataListings')
+    g.cur.execute('select * from job')
     total = g.cur.fetchone()[0]
     page, per_page, offset = get_page_args(page_parameter='page',
                                            per_page_parameter='per_page')
-    sql = 'select * from jobDataListings order by Job_ID limit {}, {}'\
+    sql = 'select * from job order by Job_ID limit {}, {}'\
         .format(offset, per_page)
     g.cur.execute(sql)
     jobs = g.cur.fetchall()
@@ -41,7 +41,7 @@ def index():
                                 format_total=True,
                                 format_number=True,
                                 )
-    return render_template('index.html', jobs=jobs,
+    return render_template('../flask_app/dashboard.html', jobs=jobs,
                            page=page,
                            per_page=per_page,
                            pagination=pagination,

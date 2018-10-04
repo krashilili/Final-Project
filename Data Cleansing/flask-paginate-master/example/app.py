@@ -4,16 +4,39 @@ import sqlite3
 from flask import Flask, render_template, g, current_app
 from flask_paginate import Pagination, get_page_args
 import click
+from flask_sqlalchemy import SQLAlchemy
+
 
 click.disable_unicode_literals_warning = True
 
 app = Flask(__name__)
 app.config.from_pyfile('app.cfg')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///jobDB.db'
+db = SQLAlchemy(app)
+
+
+class Job(db.Model):
+    Job_ID = db.Column(db.Integer, primary_key=True)
+    Date_Added = db.Column(db.String(20))
+    Country_Code = db.Column(db.String(10))
+    Job_Board = db.Column(db.String(20))
+    Job_Description = db.Column(db.String(254))
+    Job_Title = db.Column(db.String(254))
+    Job_Type = db.Column(db.String(254))
+    City = db.Column(db.String(50))
+    State = db.Column(db.String(10))
+    Location = db.Column(db.String(50))
+    Organization = db.Column(db.String(254))
+    Page_URL = db.Column(db.String(254))
+    Sector = db.Column(db.String(254))
+
+    def __repr__(self):
+        return '<Job %r>' % self.Job_ID
 
 
 @app.before_request
 def before_request():
-    g.conn = sqlite3.connect('jobData.sqlite')
+    g.conn = sqlite3.connect('jobDB.db')
     g.conn.row_factory = sqlite3.Row
     g.cur = g.conn.cursor()
 
@@ -26,14 +49,15 @@ def teardown(error):
 
 @app.route('/')
 def index():
-    g.cur.execute('select * from jobDataListings')
-    total = g.cur.fetchone()[0]
+    total = Job.query.count()
+
     page, per_page, offset = get_page_args(page_parameter='page',
                                            per_page_parameter='per_page')
-    sql = 'select * from jobDataListings order by Job_ID limit {}, {}'\
+    sql = 'select * from job order by Job_ID limit {}, {}'\
         .format(offset, per_page)
     g.cur.execute(sql)
     jobs = g.cur.fetchall()
+
     pagination = get_pagination(page=page,
                                 per_page=per_page,
                                 total=total,
@@ -41,7 +65,8 @@ def index():
                                 format_total=True,
                                 format_number=True,
                                 )
-    return render_template('index.html', jobs=jobs,
+    return render_template('../../../flask_app/dashboard.html',
+                           jobs=jobs,
                            page=page,
                            per_page=per_page,
                            pagination=pagination,
@@ -53,10 +78,10 @@ def index():
 @app.route('/jobs/page/<int:page>/')
 @app.route('/jobs/page/<int:page>')
 def jobs(page):
-    g.cur.execute('select * from jobDataListings')
+    g.cur.execute('select * from job')
     total = g.cur.fetchone()[0]
     page, per_page, offset = get_page_args()
-    sql = 'select * from jobDataListings order by Job_ID limit {}, {}'\
+    sql = 'select * from job order by Job_ID limit {}, {}'\
         .format(offset, per_page)
     g.cur.execute(sql)
     jobs = g.cur.fetchall()
@@ -67,7 +92,7 @@ def jobs(page):
                                 format_total=True,
                                 format_number=True,
                                 )
-    return render_template('index.html', jobs=jobs,
+    return render_template('../../../flask_app/dashboard.html', jobs=jobs,
                            page=page,
                            per_page=per_page,
                            pagination=pagination,
