@@ -11,14 +11,16 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','csv'])
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__)
 # Sqlite db setting
 app.config.from_pyfile('app.cfg')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db/jobDB.sqlite'
+db_path = os.path.join(APP_ROOT, 'jobDB.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = db_path
 
 # Upload file setting
-APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+
 UPLOAD_FOLDER = os.path.join(APP_ROOT, 'uploads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -309,4 +311,4 @@ def get_pagination(**kwargs):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,port=5001)
