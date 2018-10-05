@@ -92,7 +92,7 @@ def template_test():
 
 @app.route("/dashboard")
 def dashboard():
-    return render_template('dashboard.html')
+    return render_template('dboard.html')
 
 
 # @app.route("/about")
