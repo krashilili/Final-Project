@@ -15,7 +15,7 @@ ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','csv'])
 app = Flask(__name__)
 # Sqlite db setting
 app.config.from_pyfile('app.cfg')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///jobDB.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db/jobDB.sqlite'
 
 # Upload file setting
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
