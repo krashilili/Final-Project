@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block body %}
+{% if jobs %}
+  {{ pagination.info }}
+  {{ pagination.links }}
+  <div class="table-responsive">
+    <table class="table table-hover">
+    <thead>
+      <tr><th>#</th>
+          <th>Job Title</th>
+          <th>Job Type</th>
+          <th>Location</th>
+          <th>Organization</th>
+          <th>Job Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for job in jobs %}
+      <tr>
+      <td>{{ loop.index + (page - 1) * per_page }}</td>
+      <td>{{ job.Job_Title }}</td>
+      <td>{{ job.Job_Type}}</td>
+      <td>{{ job.Location}}</td>
+      <td>{{ job.Organization}}</td>
+      <td>{{ job.Date_Added}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    </table>
+  </div>
+  {{ pagination.links }}
+  {% endif %}
+{% endblock %}
+
+{% block js %}
+  {% if active_url %}
+    $('#{{ active_url }}').addClass('active');
+  {% else %}
+  $('#users-url').addClass('active');
+  {% endif %}
+{% endblock %}
