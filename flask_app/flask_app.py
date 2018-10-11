@@ -86,8 +86,7 @@ class Job(db.Model):
 
 @app.route("/")
 def template_test():
-    return render_template('template.html', my_string="Wheeeee!",
-        my_list=[0,1,2,3,4,5], title="Index", current_time=datetime.datetime.now())
+    return render_template('dboard.html')
 
 
 @app.route("/dashboard")
