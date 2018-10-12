@@ -56,7 +56,26 @@
       </div>
     </nav>
     <div class="container">
-    {% block body %}{% endblock %}
+    {% block body %}
+    <br>
+    <h1>JobMarket Summary</h1>
+    <hr>
+    <div class="col-md-12">
+      <p>JobMarket was the capstone project for our Data Analytics Bootcamp at UT Austin.
+        At a high-level, we employed Python and Pandas for data analysis and JavaScript
+      and Tableau for data visualization.  </p>
+
+      <p>
+          We used a Kaggle dataset of job postings from the tech job website dice.com. 
+          In order to create the latitude and longitude points for our Tableau map, we 
+          called to the Google Geolocation API. The Python wordcloud library was used for
+          our wordcloud visualizations and the Available Jobs line chart was created with 
+          Plotly.  
+      </p>
+
+      <p>Enjoy our website and dashboard. Thanks!
+  </p>
+    {% endblock %}
     </div>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <!-- Include all compiled plugins (below), or include individual files as needed -->
